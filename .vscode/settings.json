@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "RapBattleProgect241-339(2).sln"
+    "dotnet.defaultSolution": "RapProject.sln"
 }
