@@ -4,8 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
+public class pick_queue
+{
+    public int[] punch_queue;
+    
+
+    public pick_queue(int[] punchIDs){
+        punch_queue = punchIDs;
+    }
+}
 public class inventoryController : MonoBehaviour
 {
+    public pick_queue _pick_queue;
     public enum PunchTipes
     {
         rock,
@@ -20,6 +30,7 @@ public class inventoryController : MonoBehaviour
     [SerializeField] private int[] slotIDs;
     
     public void AddPunch(int punchTipeID){
+        /*
         inventoryController.PunchTipes punchTipe;
         switch (punchTipeID)
         {
@@ -35,7 +46,7 @@ public class inventoryController : MonoBehaviour
             default: 
                 punchTipe = PunchTipes.rock;
                 break;
-        }
+        }*/
         for (int i = 0; i < slotIDs.Length; i++)
         {
             if (slotIDs[i] == 0)
@@ -63,6 +74,8 @@ public class inventoryController : MonoBehaviour
                 return;
             }
         }
+
+        _pick_queue.punch_queue = slotIDs;
         endChoseEvent.Invoke();
         
 
