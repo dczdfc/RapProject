@@ -11,9 +11,11 @@ public class gameManager : StateManager<gameManager.EgameStates>
         start,
         pick,
         battle,
-        end
+        win,
+        lose
 
     }
+    
     [Header("ParametrsForAll")]
     [SerializeField] private Text debugText;
     [Space(5f)]
@@ -36,6 +38,9 @@ public class gameManager : StateManager<gameManager.EgameStates>
     private pickGameContext pick_game_context;
     private startGameContext start_game_context;
     private pick_queue Pick_queue;
+
+    
+    
     public void Awake(){
         ValidateConstraints();
         
@@ -60,7 +65,8 @@ public class gameManager : StateManager<gameManager.EgameStates>
         States.Add(EgameStates.battle, new battleState(battle_context, EgameStates.battle));
         States.Add(EgameStates.start, new startGameState(start_game_context, EgameStates.start));
         States.Add(EgameStates.pick, new pickGameState(pick_game_context, EgameStates.pick));
-        States.Add(EgameStates.end, new endGameState(end_game_context, EgameStates.end));
+        States.Add(EgameStates.win, new endGameState(end_game_context, EgameStates.win));
+        States.Add(EgameStates.lose, new loseState(end_game_context, EgameStates.lose));
 
         
         

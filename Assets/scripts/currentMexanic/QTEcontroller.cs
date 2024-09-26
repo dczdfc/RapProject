@@ -14,16 +14,24 @@ public class QTEcontroller : MonoBehaviour
         down
 
     }
-    public QTEButtons[] QTErock;
-    public QTEButtons[] QTEpaper;
-    public QTEButtons[] QTEsisors;
+    public QTEScriptableObject QTErock;
+    public QTEScriptableObject QTEpaper;
+    public QTEScriptableObject QTEsisors;
     public Sprite[] QTEbuttonImagesFromIDs;
     public GameObject Icon;
+    public Slider timeBar;
+
+    private float QTEtime;
+    private float StartQTEtime;
+    private float QTEWinScore;
+     private float QTELoseScore;
+    private bool started = false;
+
 
     private QTEButtons[] qteNow;
     private int buttonNow;
     private Image[] Buttons;
-    public UnityEvent<bool> EndQTEEvent;
+    public UnityEvent<bool, float> EndQTEEvent;
     public QTEcontroller.QTEButtons ButID_to_Enum(int ID){
         switch (ID)
         {
@@ -61,6 +69,7 @@ public class QTEcontroller : MonoBehaviour
 
     }
     public void StartQTE(int leftID, int rightID){
+        timeBar.value = 1;
         switch (leftID)
         {
             case 1:
@@ -78,7 +87,12 @@ public class QTEcontroller : MonoBehaviour
         }
 
     }
-    public void SetupQTEButtons(QTEButtons[] butt){
+    public void SetupQTEButtons(QTEScriptableObject QteScrObj){
+        QTEButtons[] butt = QteScrObj.QTEcombo;
+        StartQTEtime = QteScrObj.QTEtime;
+        QTEtime = StartQTEtime;
+        QTEWinScore = QteScrObj.QTEScoreWin;
+        QTELoseScore = QteScrObj.QTEScoreLose;
         buttonNow = 0;
         qteNow = butt;
         Buttons = new Image[butt.Length];
@@ -88,10 +102,20 @@ public class QTEcontroller : MonoBehaviour
             Buttons[i] = button.GetComponent<Image>();
             Buttons[i].sprite = QTEbuttonImagesFromIDs[ButEnum_to_ID(butt[i])];
         }
+        started = true;
 
     }
-    public void ExitQTE(bool isWin){
-        EndQTEEvent.Invoke(isWin);
+    public void ExitQTE(bool isWin, float deltaScore){
+        started = false;
+        for (int i = 0; i < Buttons.Length; i++)
+        {
+            if (Buttons[i] != null)
+            {
+                Destroy(Buttons[i].gameObject);
+            }
+            
+        }
+        EndQTEEvent.Invoke(isWin, deltaScore);
     }
     public void Update(){
         if (Input.GetKeyDown(KeyCode.UpArrow) && qteNow[buttonNow] == QTEButtons.up
@@ -103,8 +127,25 @@ public class QTEcontroller : MonoBehaviour
             buttonNow++;
             if (buttonNow == Buttons.Length)
             {
-                ExitQTE(true);
+                ExitQTE(true, QTEWinScore);
             }
         }
     }
+    public void FixedUpdate(){
+        if (started)
+        {
+            QTEtime -= Time.fixedDeltaTime;
+            timeBar.value = QTEtime / StartQTEtime;
+            if (QTEtime <= 0)
+            {
+                ExitQTE(false, -1*QTELoseScore);
+                
+            }
+
+        }
+        
+
+
+    }
 }
+

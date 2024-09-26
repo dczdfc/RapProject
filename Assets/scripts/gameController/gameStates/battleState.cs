@@ -7,6 +7,8 @@ public class battleState : gameState
 {
     private battleContext context;
     bool endChose = false;
+    bool end = false;
+    bool win = false;
     
     public battleState(battleContext _context, gameManager.EgameStates estate)
      :base(estate){
@@ -30,9 +32,18 @@ public class battleState : gameState
         Debug.Log("Exit battleState");
         context.battle_panel.SetActive(false);
     }
-    public void GoNext(){
+    public void GoNext(bool isEnd, bool isWin){
+        if (isEnd)
+        {
+            end = isEnd;
+            win = isWin;
+
+        }else
+        {
+            endChose = true;
+        }
         
-        endChose = true;
+        
 
     }
     public override void UpdateState(){}
@@ -43,6 +54,15 @@ public class battleState : gameState
         {
             endChose = false;
             return gameManager.EgameStates.pick; 
+        }if (end)
+        {
+            end = false;
+            if (win)
+            {
+                return gameManager.EgameStates.win;
+            }
+            return gameManager.EgameStates.lose;
+            
         }
         return StateKey;
     }
